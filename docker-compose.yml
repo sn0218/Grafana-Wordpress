@@ -1,0 +1,35 @@
+version: "3.2"
+    
+services:
+  mysql-server:
+    container_name: mysql
+    ports:
+      - "13306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: 21006338g
+      MYSQL_PASSWORD: 12345
+    image: mysql/mysql-server
+    volumes:
+      - ./sqls:/docker-entrypoint-initdb.d
+    command: mysqld --log_output=TABLE --general_log=1 --general_log_file=general.log
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress
+    ports:
+      - "20080:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql-server:3306
+      WORDPRESS_DB_USER: 21006338g
+      WORDPRESS_DB_PASSWORD: 12345
+    depends_on:
+      - mysql-server
+  
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    
